@@ -140,15 +140,17 @@ function inject($, process, base, cb, opts, relative, ignoredFiles) {
 
             if (fs.existsSync(file) && ignoredFiles.indexOf(src) === -1) {
 
-                var src = gulp.src(file);
+                var target = gulp.src(file);
 
                 if (Array.isArray(process)) {
                     process.forEach(function (fn) {
-                        src = src.pipe(fn())
+                        target = target.pipe(fn())
                     });
+                } else {
+                    target = target.pipe(process())
                 }
 
-                src.pipe(replace(el, opts.template))
+                target.pipe(replace(el, opts.template))
                     .pipe(through.obj(function (file, enc, cb) {
                         cb()
                     }, done))
